@@ -1,0 +1,64 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Nav-bar styles */
+.nav-item > a {
+  border-bottom-width: 0.2em !important;
+}
+.nav-item > a:hover {
+  border-bottom-width: 0.2em !important;
+  border-color: #0d6efd !important;
+  border-bottom-color: #cc07cc !important;
+  transition: linear !important;
+}
+
+* {
+  box-sizing: border-box;
+}
+#nprogress .spinner-icon {
+  border-top-color: rgb(103, 221, 34) !important;
+  border-left-color: rgb(190, 34, 221) !important;
+}
+#nprogress .bar {
+  /* background-color: rgba(255, 0, 212, 0.616) !important; */
+  height: 0.2em !important;
+  background-color: rgba(0, 255, 255, 0.5) !important;
+}
+
+/* End Nav-bar styles */
+
+/* Form styles */
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+/* Form button styles */
+.btn-outline-warning {
+  color: #cc07cc !important;
+  border-color: #cc07cc !important;
+}
+.btn-outline-warning:hover {
+  color: rgb(255, 255, 255) !important;
+  background-color: #cc07ccda !important;
+  border-color: #cc07cc !important;
+}
+
+.btn-check:focus + .btn-outline-warning,
+.btn-outline-warning:focus {
+  box-shadow: 0 0 0 0.25rem rgba(228, 91, 255, 0.651) !important;
+}
+
+/* End Form button styles */
+
+/* End Form styles */
