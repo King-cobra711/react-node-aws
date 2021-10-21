@@ -1,44 +1,113 @@
 import React, { useState } from "react";
 import Layout from "../components/layout";
 import axios from "axios";
+import {
+  showSuccessMessage,
+  showErrorMessage,
+  showErrorMessagePassword,
+} from "../helpers/alerts";
+import { API } from "../config";
 
 export default function Register() {
-  const RegistrationForm = () => {
-    //   State
-    const [formInputs, setFormInputs] = useState({
-      username: "",
-      email: "",
-      password: "",
-      error: "",
+  //   State
+  const [formInputs, setFormInputs] = useState({
+    username: "Matthew",
+    email: "fhjdfhwu@ehdfk.com",
+    password: "password",
+    passwordConfirm: "",
+    error: "",
+    success: "",
+    buttonText: "Register",
+  });
+  const {
+    username,
+    email,
+    password,
+    passwordConfirm,
+    error,
+    success,
+    buttonText,
+  } = formInputs;
+
+  const [passwordMatch, setPasswordMatch] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
+
+  //
+  // Functions
+  const handleChange = (props) => (e) => {
+    setFormInputs({
+      ...formInputs,
+      [props]: e.target.value,
       success: "",
+      error: "",
       buttonText: "Register",
     });
-    const { username, email, password, error, success, buttonText } =
-      formInputs;
-    //
+  };
+  const passwordCheck = () => {
+    if (password === passwordConfirm) {
+      setPasswordMatch("yes");
+    } else {
+      setPasswordMatch("no");
+    }
+  };
 
-    // Functions
-    const handleChange = (props) => (e) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (passwordMatch === "yes") {
       setFormInputs({
         ...formInputs,
-        [props]: e.target.value,
-        success: "",
-        error: "",
-        buttonText: "Register",
+        buttonText: "Registering",
       });
-    };
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      axios
-        .post(`http://localhost:5000/api/register`, {
+      setPasswordError(false);
+      try {
+        const response = await axios.post(`${API}/register`, {
           username,
           email,
           password,
-        })
-        .then((response) => console.log(response))
-        .catch((err) => console.log(err));
-    };
-    //
+        });
+        if (response.data.error) {
+          setFormInputs({
+            username: "",
+            email: "",
+            password: "",
+            passwordConfirm: "",
+            success: response.data.message,
+            error: response.data.error,
+            buttonText: "Resubmit",
+          });
+        } else {
+          setFormInputs({
+            username: "",
+            email: "",
+            password: "",
+            passwordConfirm: "",
+            success: response.data.message,
+            error: response.data.error,
+            buttonText: "Submitted",
+          });
+        }
+        // setFormInputs({
+        //   username: "",
+        //   email: "",
+        //   password: "",
+        //   passwordConfirm: "",
+        //   success: response.data.message,
+        //   error: response.data.error,
+        //   buttonText: "Submitted",
+        // });
+      } catch (err) {
+        setFormInputs({
+          ...formInputs,
+          buttonText: "Register",
+          error: err.response.data.error,
+        });
+      }
+    } else if (passwordMatch === "no" || passwordConfirm.length < 1) {
+      setPasswordError(true);
+    }
+  };
+
+  const RegistrationForm = () => {
     return (
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -69,6 +138,19 @@ export default function Register() {
           />
         </div>
         <div className="form-group">
+          <input
+            value={passwordConfirm}
+            type="password"
+            className="form-control"
+            placeholder="Confirm password..."
+            onChange={handleChange("passwordConfirm")}
+            onKeyUp={() => passwordCheck()}
+            style={{
+              borderColor: passwordMatch === "no" && "red",
+            }}
+          />
+        </div>
+        <div className="form-group">
           <button className="btn btn-outline-warning">{buttonText}</button>
         </div>
       </form>
@@ -79,6 +161,10 @@ export default function Register() {
     <Layout>
       <div className="col-md-6 offset-md-3">
         <h1>Register</h1>
+        <br />
+        {success && showSuccessMessage(success)}
+        {error && showErrorMessage(error)}
+        {passwordError && showErrorMessagePassword()}
         <br />
         {RegistrationForm()}
       </div>
