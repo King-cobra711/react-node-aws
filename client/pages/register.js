@@ -11,7 +11,7 @@ import { API } from "../config";
 export default function Register() {
   //   State
   const [formInputs, setFormInputs] = useState({
-    username: "Matthew",
+    name: "Matthew",
     email: "fhjdfhwu@ehdfk.com",
     password: "password",
     passwordConfirm: "",
@@ -19,15 +19,8 @@ export default function Register() {
     success: "",
     buttonText: "Register",
   });
-  const {
-    username,
-    email,
-    password,
-    passwordConfirm,
-    error,
-    success,
-    buttonText,
-  } = formInputs;
+  const { name, email, password, passwordConfirm, error, success, buttonText } =
+    formInputs;
 
   const [passwordMatch, setPasswordMatch] = useState("");
   const [passwordError, setPasswordError] = useState(false);
@@ -61,13 +54,13 @@ export default function Register() {
       setPasswordError(false);
       try {
         const response = await axios.post(`${API}/register`, {
-          username,
+          name,
           email,
           password,
         });
         if (response.data.error) {
           setFormInputs({
-            username: "",
+            name: "",
             email: "",
             password: "",
             passwordConfirm: "",
@@ -77,7 +70,7 @@ export default function Register() {
           });
         } else {
           setFormInputs({
-            username: "",
+            name: "",
             email: "",
             password: "",
             passwordConfirm: "",
@@ -87,7 +80,7 @@ export default function Register() {
           });
         }
         // setFormInputs({
-        //   username: "",
+        //   name: "",
         //   email: "",
         //   password: "",
         //   passwordConfirm: "",
@@ -112,11 +105,11 @@ export default function Register() {
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <input
-            value={username}
+            value={name}
             type="text"
             className="form-control"
             placeholder="Your name..."
-            onChange={handleChange("username")}
+            onChange={handleChange("name")}
           />
         </div>
         <div className="form-group">

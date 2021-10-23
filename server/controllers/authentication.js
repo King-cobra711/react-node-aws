@@ -16,7 +16,7 @@ const ses = new AWS.SES({
 
 exports.register = (req, res) => {
   // console.log("Register Controller", req.body);
-  const { username, email, password } = req.body;
+  const { name, email, password } = req.body;
 
   // check if user exists in database
   User.findOne({ email }).exec((err, user) => {
@@ -25,15 +25,15 @@ exports.register = (req, res) => {
         error: "Email is already in use",
       });
     }
-    // generate json web token with username, email, passwaord
+    // generate json web token with name, email, passwaord
     const token = jwt.sign(
-      { username, email, password },
+      { name, email, password },
       process.env.JWT_ACCOUNT_ACTIVATION,
-      { expiresIn: "10m" }
+      { expiresIn: "60m" }
     );
 
     // send email
-    const params = registerEmailParams(email, username, token);
+    const params = registerEmailParams(email, name, token);
 
     const sendEmailOnRegister = ses.sendEmail(params).promise();
 
@@ -51,4 +51,22 @@ exports.register = (req, res) => {
         });
       });
   });
+};
+
+exports.registerActivate = (req, res) => {
+  const { token } = req.body;
+  // console.log(token);
+  jwt.verify(
+    token,
+    process.env.JWT_ACCOUNT_ACTIVATION,
+    function (err, decodedData) {
+      if (err) {
+        return res.status(401).json({
+          error: "expired link. Please try again.",
+        });
+      }
+
+      const { name, email, password } = jwt.decode(token);
+    }
+  );
 };

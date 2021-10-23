@@ -6,8 +6,9 @@ const { userRegisterValidator } = require("../validators/authentication");
 const { runValidation } = require("../validators/index");
 
 // import from controllers
-const { register } = require("../controllers/authentication");
+const { register, registerActivate } = require("../controllers/authentication");
 
 router.post("/register", userRegisterValidator, runValidation, register);
+router.post("/register/activate", registerActivate);
 
 module.exports = router;
