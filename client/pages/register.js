@@ -12,7 +12,7 @@ export default function Register() {
   //   State
   const [formInputs, setFormInputs] = useState({
     name: "Matthew",
-    email: "fhjdfhwu@ehdfk.com",
+    email: "matt@matthewhansen.com.au",
     password: "password",
     passwordConfirm: "",
     error: "",

@@ -52,7 +52,7 @@ userSchema
     // generate salt
     this.salt = this.makeSalt();
     // encript passwprd
-    this.hashed_password = this.encriptPassword(password);
+    this.hashed_password = this.encryptPassword(password);
   })
   .get(function () {
     return this._password;
@@ -61,18 +61,22 @@ userSchema
 // methods > authenticate, encryptPassword, makeSalt
 userSchema.methods = {
   authenticate: function (plainText) {
-    return this.encryptPassword(plainText) == this.hashed_password;
+    return this.encryptPassword(plainText) === this.hashed_password;
   },
   encryptPassword: function (password) {
+    console.log("password here: ", password);
     if (!password) return "";
     try {
-      return crypto.creatHmac("sha1", this.salt).update(password).digest("hex");
+      return crypto
+        .createHmac("sha1", this.salt)
+        .update(password)
+        .digest("hex");
     } catch (err) {
       return "";
     }
   },
   makeSalt: function () {
-    return Math.round(new Date().valueOf() * Math.random() + "");
+    return Math.round(new Date().valueOf() * Math.random()) + "";
   },
 };
 // export user model based on this schema
