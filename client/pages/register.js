@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Router from "next/router";
 import Layout from "../components/layout";
 import axios from "axios";
 import {
@@ -7,6 +8,7 @@ import {
   showErrorMessagePassword,
 } from "../helpers/alerts";
 import { API } from "../config";
+import { isAuth } from "../helpers/auth";
 
 export default function Register() {
   //   State
@@ -19,6 +21,11 @@ export default function Register() {
     success: "",
     buttonText: "Register",
   });
+
+  useEffect(() => {
+    isAuth() && Router.push("/");
+  }, []);
+
   const { name, email, password, passwordConfirm, error, success, buttonText } =
     formInputs;
 
@@ -79,15 +86,6 @@ export default function Register() {
             buttonText: "Submitted",
           });
         }
-        // setFormInputs({
-        //   name: "",
-        //   email: "",
-        //   password: "",
-        //   passwordConfirm: "",
-        //   success: response.data.message,
-        //   error: response.data.error,
-        //   buttonText: "Submitted",
-        // });
       } catch (err) {
         setFormInputs({
           ...formInputs,

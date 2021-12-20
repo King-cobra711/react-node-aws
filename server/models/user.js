@@ -44,6 +44,7 @@ const userSchema = new mongoose.Schema(
 );
 
 // virtual fields
+// mongoose docs > search > Schemas: Virtuals
 userSchema
   .virtual("password")
   .set(function (password) {
@@ -64,7 +65,6 @@ userSchema.methods = {
     return this.encryptPassword(plainText) === this.hashed_password;
   },
   encryptPassword: function (password) {
-    console.log("password here: ", password);
     if (!password) return "";
     try {
       return crypto

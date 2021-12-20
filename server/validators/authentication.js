@@ -7,3 +7,9 @@ exports.userRegisterValidator = [
     .isLength({ min: 6 })
     .withMessage("Password must be at least 6 characters"),
 ];
+exports.userLoginValidator = [
+  check("email").isEmail().withMessage("Must be a valid email"),
+  check("password")
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters"),
+];

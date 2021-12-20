@@ -2,13 +2,24 @@ const express = require("express");
 const router = express.Router();
 
 // import validators
-const { userRegisterValidator } = require("../validators/authentication");
+const {
+  userRegisterValidator,
+  userLoginValidator,
+} = require("../validators/authentication");
 const { runValidation } = require("../validators/index");
 
 // import from controllers
-const { register, registerActivate } = require("../controllers/authentication");
+const {
+  register,
+  registerActivate,
+  login,
+} = require("../controllers/authentication");
+
+// Router-level middleware
+// https://expressjs.com/en/guide/using-middleware.html
 
 router.post("/register", userRegisterValidator, runValidation, register);
 router.post("/register/activate", registerActivate);
+router.post("/login", userLoginValidator, runValidation, login);
 
 module.exports = router;

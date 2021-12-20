@@ -78,7 +78,6 @@ exports.registerActivate = (req, res) => {
 
         // register new user
         const newUser = new User({ username, name, email, password });
-        console.log("This is the user to be save in the db", newUser);
         newUser.save((err, result) => {
           if (err) {
             return res.status(401).json({
@@ -92,4 +91,32 @@ exports.registerActivate = (req, res) => {
       });
     }
   );
+};
+
+exports.login = (req, res) => {
+  const { email, password } = req.body;
+
+  // check for user in db
+  User.findOne({ email }).exec((err, user) => {
+    if (err || !user) {
+      return res.status(400).json({
+        error: "User not found",
+      });
+    }
+    // compare password to hashed password stored in db
+    if (!user.authenticate(password)) {
+      return res.status(400).json({
+        error: "Email and password do not match",
+      });
+    }
+    // generate token and send to client
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+    const { _id, name, email, role } = user;
+    return res.json({
+      token,
+      user: { _id, name, email, role },
+    });
+  });
 };
