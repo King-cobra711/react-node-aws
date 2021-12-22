@@ -19,6 +19,7 @@ const {
 // Router-level middleware
 // https://expressjs.com/en/guide/using-middleware.html
 
+// routes
 router.post("/register", userRegisterValidator, runValidation, register);
 router.post("/register/activate", registerActivate);
 router.post("/login", userLoginValidator, runValidation, login);

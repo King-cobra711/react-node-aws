@@ -11,7 +11,7 @@ export default function Login() {
   //   State
   const [formInputs, setFormInputs] = useState({
     email: "matt@matthewhansen.com.au",
-    password: "password",
+    password: "Password",
     error: "",
     success: "",
     buttonText: "Login",
