@@ -123,7 +123,44 @@ exports.login = (req, res) => {
 };
 
 // req.user
+// get suser info from front end via jwt token
 exports.requireSignin = expressJwt({
   secret: process.env.JWT_SECRET,
   algorithms: ["RS256"],
 });
+
+// check for user
+exports.authMiddleware = (req, res, next) => {
+  const authUserId = req.user._id;
+  User.findOne({ _id: authUserId }).exec((err, user) => {
+    if (err || !user) {
+      res.status(400).json({
+        error: "user not found",
+      });
+    }
+
+    req.profile = user;
+    next();
+  });
+};
+
+// check for admin
+exports.adminMiddleware = (req, res, next) => {
+  const adminUserId = req.user._id;
+  User.findOne({ _id: adminUserId }).exec((err, user) => {
+    if (err || !user) {
+      res.status(400).json({
+        error: "user not found",
+      });
+    }
+
+    if (user.role !== "admin") {
+      res.status(401).json({
+        error: "Admin resource. Access denied",
+      });
+    }
+
+    req.profile = user;
+    next();
+  });
+};
