@@ -107,6 +107,9 @@ export default function Login() {
         {error && showErrorMessage(error)}
         <br />
         {LoginForm()}
+        <Link href="/auth/password/forgot">
+          <a className="text-danger float-end">Forgot password</a>
+        </Link>
       </div>
     </Layout>
   );
