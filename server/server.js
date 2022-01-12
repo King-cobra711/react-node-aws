@@ -20,8 +20,8 @@ const userRoutes = require("./routes/user");
 // app middleswares
 app.use(morgan("dev"));
 app.use(bodyParser.json());
-app.use(cors());
-// app.use(cors({ origin: process.env.CLIENT_URL }));
+// app.use(cors());
+app.use(cors({ origin: process.env.CLIENT_URL }));
 
 // middleware
 app.use("/api", authenticationRoutes, userRoutes);

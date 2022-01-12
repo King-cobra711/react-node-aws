@@ -123,7 +123,7 @@ exports.login = (req, res) => {
 };
 
 // req.user
-// get suser info from front end via jwt token
+// get user info from front end via jwt token
 exports.requireSignin = expressJwt({
   secret: process.env.JWT_SECRET,
   algorithms: ["HS256"],

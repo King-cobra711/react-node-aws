@@ -52,7 +52,7 @@ export default function Login() {
           ? Router.push("/admin")
           : Router.push("/user");
       });
-      console.log(response); //user & token
+      console.log("User & Token", response); //user & token
       if (response.data.error) {
         setFormInputs({
           email: "",

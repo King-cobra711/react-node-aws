@@ -1,14 +1,14 @@
+import React from "react";
 import Layout from "../../components/layout";
-import axios from "axios";
+import withUser from "../withUser";
 
-const User = ({ todos }) => <Layout>{JSON.stringify(todos)}</Layout>;
-
-User.getInitialProps = async () => {
-  const response = await axios.get(
-    "https://jsonplaceholder.typicode.com/todos"
+const User = ({ user, token }) => {
+  return (
+    <Layout>
+      {JSON.stringify(user)}
+      {JSON.stringify(token)}
+    </Layout>
   );
-
-  return { todos: response.data };
 };
 
-export default User;
+export default withUser(User);
