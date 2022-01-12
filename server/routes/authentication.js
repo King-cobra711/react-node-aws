@@ -5,6 +5,8 @@ const router = express.Router();
 const {
   userRegisterValidator,
   userLoginValidator,
+  forgotPasswordValidator,
+  resetPasswordValidator,
 } = require("../validators/authentication");
 const { runValidation } = require("../validators/index");
 
@@ -14,6 +16,8 @@ const {
   registerActivate,
   login,
   requireSignin,
+  forgotPassword,
+  resetPassword,
 } = require("../controllers/authentication");
 
 // Router-level middleware
@@ -28,5 +32,17 @@ router.get("/secret", requireSignin, (req, res) => {
     data: "This is secret page for logged in users only",
   });
 });
+router.put(
+  "/forgot-password",
+  forgotPasswordValidator,
+  runValidation,
+  forgotPassword
+);
+router.put(
+  "/reset-password",
+  resetPasswordValidator,
+  runValidation,
+  resetPassword
+);
 
 module.exports = router;

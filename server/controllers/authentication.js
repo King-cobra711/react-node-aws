@@ -2,7 +2,11 @@ const User = require("../models/user");
 const AWS = require("aws-sdk");
 const jwt = require("jsonwebtoken");
 const shortid = require("shortid");
-const { registerEmailParams } = require("../helpers/email");
+const _ = require("lodash");
+const {
+  registerEmailParams,
+  forgotPasswordEmailParams,
+} = require("../helpers/email");
 const expressJwt = require("express-jwt");
 
 AWS.config.update({
@@ -163,4 +167,96 @@ exports.adminMiddleware = (req, res, next) => {
     req.profile = user;
     next();
   });
+};
+
+exports.forgotPassword = (req, res) => {
+  // query db to see if users email exists
+
+  const { email } = req.body;
+  User.findOne({ email }).exec((err, user) => {
+    if (err || !user) {
+      return res.status(404).json({
+        error: "User with that email does not exist",
+      });
+    }
+    // generate token and email to user
+
+    const token = jwt.sign(
+      { name: User.name },
+      process.env.JWT_RESET_PASSWORD,
+      { expiresIn: "10m" }
+    );
+
+    // send email
+    const params = forgotPasswordEmailParams(email, token);
+
+    // populate the database user resetPaswordLink
+    return User.updateOne({ resetPasswordLink: token }, (err, success) => {
+      if (err) {
+        return res.status(404).json({
+          error: "Failed to reset password. Try again later.",
+        });
+      }
+      const sendEmail = ses.sendEmail(params).promise();
+      sendEmail
+        .then((data) => {
+          console.log("ses reset password success data: ", data);
+          return res.json({
+            message: `Email has been sent to ${email}. Click the link to reset your password.`,
+          });
+        })
+        .catch((error) => {
+          console.log("ses reset password failed error: ", error);
+          return res.json({
+            error: "We could not verify your email. Please try again later.",
+          });
+        });
+    });
+  });
+};
+
+exports.resetPassword = (req, res) => {
+  const { resetPasswordLink, newPassword } = req.body;
+  if (resetPasswordLink) {
+    // check if the link has expired
+    jwt.verify(
+      resetPasswordLink,
+      process.env.JWT_RESET_PASSWORD,
+      (err, success) => {
+        if (err) {
+          return res.status(400).json({
+            error: "Forgot password email link has expired. Try again.",
+          });
+        }
+
+        User.findOne({ resetPasswordLink }).exec((err, user) => {
+          if (err || !user) {
+            return res.status(400).json({
+              error: "Invalid token. Try again",
+            });
+          }
+
+          const updatedFields = {
+            password: newPassword,
+            resetPasswordLink: "",
+          };
+
+          // use loadash to update/merge values of the returned user from previous query
+          user = _.extend(user, updatedFields);
+
+          // save user new values in password and resetPasswordLink 'columns' in db.
+          user.save((err, result) => {
+            if (err) {
+              return res.status(400).json({
+                error: "Password reset failed. Try again.",
+              });
+            }
+            res.json({
+              message: "Now you can login with your new password.",
+            });
+          });
+        });
+      }
+    );
+  }
 };
