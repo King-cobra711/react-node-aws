@@ -18,11 +18,44 @@ const ForgotPassword = () => {
   //
 
   const handleChange = (e) => {
-    setState({ ...state, email: e.target.value });
+    if (buttonText == "Email Sent") {
+      setState({
+        buttonText: "Send Link",
+        email: e.target.value,
+        success: "",
+        error: "",
+      });
+    } else {
+      setState({ ...state, email: e.target.value, success: "", error: "" });
+    }
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("post email to email: ", email);
+    try {
+      const response = await axios.put(`${API}/forgot-password`, { email });
+      if (response.data.error) {
+        setState({
+          ...state,
+          buttonText: "Resubmit",
+          error: response.data.error,
+          success: "",
+        });
+      } else {
+        setState({
+          email: "",
+          buttonText: "Email Sent",
+          success: response.data.message,
+          error: "",
+        });
+      }
+    } catch (err) {
+      setState({
+        ...state,
+        buttonText: "Resubmit",
+        success: "",
+        error: err.response.data.error,
+      });
+    }
   };
 
   const passwordForgotForm = () => {
@@ -50,7 +83,8 @@ const ForgotPassword = () => {
       <div className="row">
         <div className="col-md-6 offset-md-3">
           <h1>Forgot Password</h1>
-          <br />
+          {success && showSuccessMessage(success)}
+          {error && showErrorMessage(error)}
           {passwordForgotForm()}
         </div>
       </div>

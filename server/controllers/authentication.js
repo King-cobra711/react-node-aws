@@ -128,6 +128,7 @@ exports.login = (req, res) => {
 
 // req.user
 // get user info from front end via jwt token
+// This checks to see if a token is valid
 exports.requireSignin = expressJwt({
   secret: process.env.JWT_SECRET,
   algorithms: ["HS256"],
@@ -135,6 +136,9 @@ exports.requireSignin = expressJwt({
 
 // check for user
 exports.authMiddleware = (req, res, next) => {
+  // req.user is the default for express-jwt package.
+  // req.user._id is available because that's what was used when the token was generated (jwt.sign()) during the login process.
+  // requireSignIn must be used first in the routes inorder to access req.user._id. otherwise this will not be available and the findOne({}) will not work.
   const authUserId = req.user._id;
   User.findOne({ _id: authUserId }).exec((err, user) => {
     if (err || !user) {
@@ -143,6 +147,7 @@ exports.authMiddleware = (req, res, next) => {
       });
     }
 
+    // Just like requireSignIn attached the user property to the request object and populated it with _id (userid), you can attach other properties and populate them with things like user info as done below with req.profile.
     req.profile = user;
     next();
   });
@@ -182,7 +187,7 @@ exports.forgotPassword = (req, res) => {
     // generate token and email to user
 
     const token = jwt.sign(
-      { name: User.name },
+      { name: user.name },
       process.env.JWT_RESET_PASSWORD,
       { expiresIn: "10m" }
     );
@@ -191,7 +196,7 @@ exports.forgotPassword = (req, res) => {
     const params = forgotPasswordEmailParams(email, token);
 
     // populate the database user resetPaswordLink
-    return User.updateOne({ resetPasswordLink: token }, (err, success) => {
+    return user.updateOne({ resetPasswordLink: token }, (err, success) => {
       if (err) {
         return res.status(404).json({
           error: "Failed to reset password. Try again later.",
@@ -202,7 +207,7 @@ exports.forgotPassword = (req, res) => {
         .then((data) => {
           console.log("ses reset password success data: ", data);
           return res.json({
-            message: `Email has been sent to ${email}. Click the link to reset your password.`,
+            message: `Email sent to ${email}. Follow the instructions to reset your password.`,
           });
         })
         .catch((error) => {
