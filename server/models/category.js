@@ -24,7 +24,7 @@ const categorySchema = new mongoose.Schema(
       max: 2000000,
     },
     postedBy: {
-      type: ObjectId,
+      type: mongoose.ObjectId,
       ref: "User",
     },
   },
