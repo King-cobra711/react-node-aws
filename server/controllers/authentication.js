@@ -257,7 +257,7 @@ exports.resetPassword = (req, res) => {
               });
             }
             res.json({
-              message: "Now you can login with your new password.",
+              message: "You can now login with your new password.",
             });
           });
         });

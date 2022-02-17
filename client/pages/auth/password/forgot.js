@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Layout from "../../../components/layout";
 import axios from "axios";
 import Router from "next/router";
@@ -8,7 +8,7 @@ import { API } from "../../../config";
 const ForgotPassword = () => {
   // state
   const [state, setState] = useState({
-    email: "",
+    email: "matt@matthewhansen.com.au",
     buttonText: "Send Link",
     success: "",
     error: "",
