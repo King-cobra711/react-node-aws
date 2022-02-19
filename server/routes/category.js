@@ -27,7 +27,7 @@ const {
 
 router.post(
   "/category",
-  categoryCreateValidator,
+  //   categoryCreateValidator,
   runValidation,
   requireSignin,
   adminMiddleware,
