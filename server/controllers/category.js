@@ -20,7 +20,6 @@ exports.create = (req, res) => {
         error: "Image could not upload",
       });
     }
-    // console.table(err, fields, files);
 
     const { name, content } = fields;
     const { image } = files;
@@ -28,13 +27,24 @@ exports.create = (req, res) => {
     const slug = slugify(name);
     let category = new Category({ name, content, slug });
 
+    // check image size
     if (image.size > 2000000) {
       return res.status(400).json({
         error: "Image file must not exceed 2mb",
       });
     }
+
+    //   check to see if there is an existing entry
+    Category.find({ name }).exec((err, title) => {
+      if (title.length > 0 && title[0]["name"] == name) {
+        res.status(400).json({
+          error: "This Category name already exists.",
+        });
+      }
+    });
+
     // upload image to S3
-    console.log("this is the image.fithpath", image.filepath);
+    console.log("this is the image.filepath", image.filepath);
     const params = {
       Bucket: "king-cobra711-react-node-aws",
       Key: `category/${uuidv4()}`,
@@ -43,34 +53,29 @@ exports.create = (req, res) => {
       ContentType: "image/jpg",
     };
 
-    //   check to see if there is an existing entry
-
-    Category.find({ name }).exec((err, title) => {
-      if (title.length > 0 && title[0]["name"] == name) {
+    // Upload to aws S3
+    s3.upload(params, function (err, data) {
+      if (err) {
         res.status(400).json({
-          error: "This Category name already exists.",
-        });
-      } else {
-        // save to database
-        category.save((err, success) => {
-          if (err) {
-            res.status(400).json({
-              error: "Error saving category to database",
-            });
-          } else {
-            s3.upload(params, function (err, data) {
-              if (err) {
-                res.status(400).json({
-                  error: "Failed to upload to S3",
-                });
-              }
-              category.image.url = data.Location;
-              category.image.key = data.Key;
-            });
-            return res.json(success);
-          }
+          error: "Failed to upload to S3",
         });
       }
+      category.image.url = data.Location;
+      category.image.key = data.Key;
+
+      // save to database
+      category.save((err, success) => {
+        if (err) {
+          res.status(400).json({
+            error: "Error saving category to database",
+          });
+        } else {
+          return res.json({
+            success,
+            message: `Successfully created "${name}"`,
+          });
+        }
+      });
     });
   });
 };
@@ -99,7 +104,14 @@ exports.create = (req, res) => {
 //   });
 // };
 exports.list = (req, res) => {
-  //
+  Category.find({}).exec((err, data) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Categories could not load",
+      });
+    }
+    res.json(data);
+  });
 };
 exports.read = (req, res) => {
   //

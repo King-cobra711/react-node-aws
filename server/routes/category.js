@@ -33,7 +33,7 @@ router.post(
   adminMiddleware,
   create
 );
-router.get("/category", list);
+router.get("/categories", list);
 router.get("/category/:slug", read);
 router.put(
   "/category/:slug",
