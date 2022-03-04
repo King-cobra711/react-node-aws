@@ -1,6 +1,10 @@
+import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Resizer from "react-image-file-resizer";
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import "react-quill/dist/quill.snow.css";
+import "react-quill/dist/quill.bubble.css";
 import { API } from "../../../config";
 import Layout from "../../../components/layout";
 import withAdmin from "../../withAdmin";
@@ -9,16 +13,17 @@ import { showSuccessMessage, showErrorMessage } from "../../../helpers/alerts";
 const Create = ({ user, token }) => {
   const [state, setState] = useState({
     name: "",
-    content: "",
     error: "",
     success: "",
     buttonText: "Create",
     image: "",
   });
 
+  const [content, setContent] = useState("");
+
   const [imageUploadText, setImageUploadText] = useState("Upload Image");
 
-  const { name, content, error, success, image, buttonText } = state;
+  const { name, error, success, image, buttonText } = state;
 
   const handleChange = (name) => (e) => {
     setState({
@@ -28,6 +33,11 @@ const Create = ({ user, token }) => {
       success: "",
       buttonText: "Create",
     });
+  };
+
+  const handleContent = (event) => {
+    setContent(event);
+    setState({ ...state, error: "", success: "" });
   };
 
   const handleImage = (event) => {
@@ -114,10 +124,13 @@ const Create = ({ user, token }) => {
       </div>
       <div className="form-group">
         <label className="text-muted">Content</label>
-        <textarea
-          onChange={handleChange("content")}
+        <ReactQuill
+          onChange={handleContent}
           value={content}
+          theme="bubble"
           className="form-control"
+          placeholder="Write description here..."
+          // style={{ border: "1px solid #666" }}
           required
         />
       </div>
