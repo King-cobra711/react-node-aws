@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Resizer from "react-image-file-resizer";
 import { API } from "../../../config";
 import Layout from "../../../components/layout";
 import withAdmin from "../../withAdmin";
@@ -11,33 +12,55 @@ const Create = ({ user, token }) => {
     content: "",
     error: "",
     success: "",
-    formData: process.browser && new FormData(),
     buttonText: "Create",
-    imageUploadText: "Upload Image",
+    image: "",
   });
 
-  const {
-    name,
-    content,
-    error,
-    success,
-    formData,
-    buttonText,
-    imageUploadText,
-  } = state;
+  const [imageUploadText, setImageUploadText] = useState("Upload Image");
+
+  const { name, content, error, success, image, buttonText } = state;
 
   const handleChange = (name) => (e) => {
-    const value = name === "image" ? e.target.files[0] : e.target.value;
-    const imageName =
-      name === "image" ? e.target.files[0].name : "Upload Image";
-    formData.set(name, value);
     setState({
       ...state,
-      [name]: value,
+      [name]: e.target.value,
       error: "",
       success: "",
-      imageUploadText: imageName,
+      buttonText: "Create",
     });
+  };
+
+  const handleImage = (event) => {
+    let fileInput = false;
+    if (event.target.files[0]) {
+      fileInput = true;
+    }
+    if (fileInput) {
+      try {
+        Resizer.imageFileResizer(
+          event.target.files[0],
+          300,
+          300,
+          "JPEG",
+          100,
+          0,
+          (uri) => {
+            // console.log(uri);
+            setState({
+              ...state,
+              image: uri,
+              error: "",
+              success: "",
+              buttonText: "Create",
+            });
+          },
+          "base64"
+        );
+        setImageUploadText(event.target.files[0].name);
+      } catch (err) {
+        console.log(err);
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -47,27 +70,31 @@ const Create = ({ user, token }) => {
       buttonText: "Creating",
     });
     try {
-      const response = await axios.post(`${API}/category`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.post(
+        `${API}/category`,
+        { name, content, image },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       console.log("Category create response: ", response);
       setState({
-        ...state,
-        formData: process.browser && new FormData(),
+        name: "",
+        content: "",
+        image: "",
         buttonText: "Created",
-        imageUploadText: "Upload Image",
         error: "",
         success: response.data.message,
       });
+      imageUploadText("Upload Image");
     } catch (error) {
       console.log("Category create error: ", error);
       setState({
         ...state,
-        name: "",
-        content: "",
         buttonText: "Create",
+        success: "",
         error: error.response.data.error,
       });
     }
@@ -98,7 +125,7 @@ const Create = ({ user, token }) => {
         <label className="btn btn-outline-secondary">
           {imageUploadText}
           <input
-            onChange={handleChange("image")}
+            onChange={handleImage}
             type="file"
             accept="image/*"
             className="form-control"
@@ -117,11 +144,12 @@ const Create = ({ user, token }) => {
       <div className="row">
         <div className="col-md-6 offset-md-3">
           <h1>Create Category</h1>
+
+          <br />
+          {success && showSuccessMessage(success)}
+          {error && showErrorMessage(error)}
+          {createCategoryForm()}
         </div>
-        <br />
-        {success && showSuccessMessage(success)}
-        {error && showErrorMessage(error)}
-        {createCategoryForm()}
       </div>
     </Layout>
   );

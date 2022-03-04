@@ -100,7 +100,6 @@ exports.registerActivate = (req, res) => {
 
 exports.login = (req, res) => {
   const { email, password } = req.body;
-
   // check for user in db
   User.findOne({ email }).exec((err, user) => {
     if (err || !user) {
@@ -136,7 +135,7 @@ exports.requireSignin = expressJwt({
 
 // check for user
 exports.authMiddleware = (req, res, next) => {
-  // req.user is the default for express-jwt package.
+  // req.user is the default for express-jwt package. See here https://www.npmjs.com/package/express-jwt for more info.
   // req.user._id is available because that's what was used when the token was generated (jwt.sign()) during the login process.
   // requireSignIn must be used first in the routes inorder to access req.user._id. otherwise this will not be available and the findOne({}) will not work.
   const authUserId = req.user._id;
