@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import NProgress from "nprogress";
 import Router from "next/router";
@@ -16,7 +16,11 @@ const Layout = ({ children }) => {
           <a className="nav-link text-light">Home</a>
         </Link>
       </li>
-
+      <li className="nav-item submitLinkNav">
+        <Link href="/user/link/create">
+          <a className="nav-link text-light btn btn-success">Submit a Link</a>
+        </Link>
+      </li>
       {!isAuth() && (
         <React.Fragment>
           <li className="nav-item">
@@ -31,7 +35,6 @@ const Layout = ({ children }) => {
           </li>
         </React.Fragment>
       )}
-
       {isAuth() && isAuth().role === "admin" && (
         <li className="nav-item ms-auto">
           <Link href="/admin">
@@ -53,6 +56,7 @@ const Layout = ({ children }) => {
           </a>
         </li>
       )}
+      <li className="nav-item spinner-space"></li>
     </ul>
   );
 

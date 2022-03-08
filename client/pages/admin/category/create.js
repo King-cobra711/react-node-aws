@@ -130,7 +130,6 @@ const Create = ({ user, token }) => {
           theme="bubble"
           className="form-control"
           placeholder="Write description here..."
-          // style={{ border: "1px solid #666" }}
           required
         />
       </div>

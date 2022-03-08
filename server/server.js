@@ -17,6 +17,7 @@ mongoose
 const authenticationRoutes = require("./routes/authentication");
 const userRoutes = require("./routes/user");
 const categoryRoutes = require("./routes/category");
+const linkRoutes = require("./routes/link");
 
 // app middleswares
 app.use(morgan("dev"));
@@ -26,7 +27,7 @@ app.use(bodyParser.json({ limit: "5mb", type: "application/json" }));
 app.use(cors({ origin: process.env.CLIENT_URL }));
 
 // middleware
-app.use("/api", authenticationRoutes, userRoutes, categoryRoutes);
+app.use("/api", authenticationRoutes, userRoutes, categoryRoutes, linkRoutes);
 
 const port = process.env.PORT;
 

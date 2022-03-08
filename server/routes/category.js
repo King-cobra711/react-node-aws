@@ -12,7 +12,6 @@ const { runValidation } = require("../validators/index");
 
 const {
   requireSignin,
-  authMiddleware,
   adminMiddleware,
 } = require("../controllers/authentication");
 
