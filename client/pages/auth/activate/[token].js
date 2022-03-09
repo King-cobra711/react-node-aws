@@ -21,7 +21,6 @@ const ActivateAccount = ({ router }) => {
 
   useEffect(() => {
     let token = router.query.token;
-    console.log("this is the token", token);
     if (token) {
       const { name } = jwt.decode(token);
       setState({

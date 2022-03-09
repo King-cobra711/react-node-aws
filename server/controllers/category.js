@@ -1,4 +1,5 @@
 const Category = require("../models/category");
+const Link = require("../models/link");
 const slugify = require("slugify");
 const formidable = require("formidable");
 const AWS = require("aws-sdk");
@@ -80,7 +81,6 @@ const s3 = new AWS.S3({
 // };
 exports.create = (req, res) => {
   const { name, image, content } = req.body;
-  console.log("This is the incoming image: ", image);
   // image data
   const base64Data = new Buffer.from(
     image.replace(/^data:image\/\w+;base64,/, ""),
@@ -90,6 +90,9 @@ exports.create = (req, res) => {
 
   const slug = slugify(name);
   let category = new Category({ name, content, slug });
+
+  // Posted by
+  category.postedBy = req.user._id;
 
   //   check to see if there is an existing entry
   Category.find({ name }).exec((err, title) => {
@@ -118,8 +121,6 @@ exports.create = (req, res) => {
     }
     category.image.url = data.Location;
     category.image.key = data.Key;
-    // Posted by
-    category.postedBy = req.user._id;
 
     // save to database
     category.save((err, success) => {
@@ -147,7 +148,33 @@ exports.list = (req, res) => {
   });
 };
 exports.read = (req, res) => {
-  //
+  const { slug } = req.params;
+  let limit = req.body.limit ? parseInt(req.body.limit) : 10;
+  let skip = req.body.skip ? parseInt(req.body.skip) : 0;
+  Category.findOne({ slug })
+    .populate("postedBy", "_id name username")
+    .exec((err, category) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Could not load category",
+        });
+      }
+      console.log(category);
+      Link.find({ categories: category })
+        .populate("postedBy", "_id name username")
+        .populate("categories", "name")
+        .sort({ createdAt: -1 })
+        .limit(limit)
+        .skip(skip)
+        .exec((err, links) => {
+          if (err) {
+            return res.status(400).json({
+              error: "Could not load links of a category",
+            });
+          }
+          res.json({ category, links });
+        });
+    });
 };
 exports.update = (req, res) => {
   //

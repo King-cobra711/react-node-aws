@@ -55,7 +55,6 @@ const Create = ({ user, token }) => {
           100,
           0,
           (uri) => {
-            // console.log(uri);
             setState({
               ...state,
               image: uri,
@@ -89,18 +88,16 @@ const Create = ({ user, token }) => {
           },
         }
       );
-      console.log("Category create response: ", response);
       setState({
         name: "",
-        content: "",
         image: "",
         buttonText: "Created",
         error: "",
         success: response.data.message,
       });
-      imageUploadText("Upload Image");
+      setContent("");
+      setImageUploadText("Upload Image");
     } catch (error) {
-      console.log("Category create error: ", error);
       setState({
         ...state,
         buttonText: "Create",
