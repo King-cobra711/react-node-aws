@@ -18,6 +18,7 @@ const Create = ({ user, token }) => {
     buttonText: "Create",
     image: "",
   });
+  const [message, setMessage] = useState("");
 
   const [content, setContent] = useState("");
 
@@ -93,7 +94,7 @@ const Create = ({ user, token }) => {
         image: "",
         buttonText: "Created",
         error: "",
-        success: response.data.message,
+        success: "response.data.message",
       });
       setContent("");
       setImageUploadText("Upload Image");

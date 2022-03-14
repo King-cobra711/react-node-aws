@@ -28,11 +28,31 @@ const Read = ({ user, token }) => {
   const updateCtaegory = () => {
     const response = axios.get(`${API}/categories`);
   };
-  const deleteCategory = async () => {
-    const response = await axios.get(`${API}/categories`);
+  const deleteCategory = async (slug) => {
+    try {
+      const response = await axios.delete(`${API}/category/${slug}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("CATEGORY DELETE SUCCESS", response);
+      loadCategories();
+      setState({
+        ...state,
+        error: "",
+        success: response.data.message,
+      });
+    } catch (err) {
+      console.log("CATEGORY DELETE ERROR", err);
+    }
   };
-  const confirmDelete = async (slug) => {
-    console.log("delete? : ", slug);
+  const confirmDelete = async (e, slug) => {
+    e.preventDefault();
+    let answer = window.confirm(`Are you sure you want to delet ${slug}?`);
+
+    if (answer) {
+      deleteCategory(slug);
+    }
   };
 
   const listCategories = () =>
@@ -60,7 +80,7 @@ const Read = ({ user, token }) => {
                 <Link href={`/admin/category/${c.slug}`}>
                   <button
                     type="button"
-                    class="btn btn-outline-secondary btn-sm"
+                    className="btn btn-outline-secondary btn-sm"
                   >
                     Update
                   </button>
@@ -68,8 +88,8 @@ const Read = ({ user, token }) => {
 
                 <button
                   type="button"
-                  class="btn btn-outline-danger btn-sm"
-                  onClick={() => confirmDelete(c.slug)}
+                  className="btn btn-outline-danger btn-sm"
+                  onClick={(e) => confirmDelete(e, c.slug)}
                 >
                   Delete
                 </button>
@@ -80,15 +100,18 @@ const Read = ({ user, token }) => {
               id="mobile-content"
             >
               <Link href={`/admin/category/${c.slug}`}>
-                <button type="button" class="btn btn-outline-secondary btn-sm">
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary btn-sm"
+                >
                   Update
                 </button>
               </Link>
 
               <button
                 type="button"
-                class="btn btn-outline-danger btn-sm"
-                onClick={() => confirmDelete(c.slug)}
+                className="btn btn-outline-danger btn-sm"
+                onClick={(e) => confirmDelete(e, c.slug)}
               >
                 Delete
               </button>

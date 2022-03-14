@@ -186,7 +186,7 @@ exports.remove = (req, res) => {
     // remove the exising image from s3
     const deleteParams = {
       Bucket: "king-cobra711-react-node-aws",
-      Key: `category/${success.image.key}`,
+      Key: `${success.image.key}`,
     };
 
     s3.deleteObject(deleteParams, (err, data) => {
@@ -197,7 +197,7 @@ exports.remove = (req, res) => {
       }
     });
     res.json({
-      message: "Category deleted successfully",
+      message: `Successfully deleted ${slug}`,
     });
   });
 };
