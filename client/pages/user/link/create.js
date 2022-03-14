@@ -129,7 +129,7 @@ const Create = ({ token }) => {
         <input
           type="radio"
           onClick={handleTypeClick}
-          checked={type === "free"}
+          defaultChecked={type === "free"}
           value="free"
           className="form-check-input"
           name="type"
@@ -140,7 +140,7 @@ const Create = ({ token }) => {
         <input
           type="radio"
           onClick={handleTypeClick}
-          checked={type === "paid"}
+          defaultChecked={type === "paid"}
           value="paid"
           className="form-check-input"
           name="type"
@@ -155,7 +155,7 @@ const Create = ({ token }) => {
         <input
           type="radio"
           onClick={handleMediumClick}
-          checked={medium === "video"}
+          defaultChecked={medium === "video"}
           value="video"
           className="form-check-input"
           name="medium"
@@ -166,7 +166,7 @@ const Create = ({ token }) => {
         <input
           type="radio"
           onClick={handleMediumClick}
-          checked={medium === "article"}
+          defaultChecked={medium === "article"}
           value="article"
           className="form-check-input"
           name="medium"

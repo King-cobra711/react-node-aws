@@ -6,22 +6,22 @@ import Link from "next/link";
 const Home = ({ categories }) => {
   const listCategories = () =>
     categories.map((c, key) => (
-      <Link href="/" key={key}>
+      <Link href={`/links/${c.slug}`} key={key}>
         <a
           style={{ border: "1px solid #0d6efd" }}
           className="bg-light col-md-4 p-3"
         >
           <div>
-            <div className="row">
-              <div className="col-md-4">
+            <div className="row align-items-center">
+              <div className="col-lg-12">
                 <img
                   src={c.image.url}
                   alt="/"
                   style={{ width: "100px", height: "auto" }}
-                  className="pe-3"
+                  className="me-3 float-start"
                 />
+                <h1>{c.name}</h1>
               </div>
-              <div className="col-md-8">{c.name}</div>
             </div>
           </div>
         </a>
@@ -42,6 +42,7 @@ const Home = ({ categories }) => {
 };
 Home.getInitialProps = async () => {
   const response = await axios.get(`${API}/categories`);
+  console.log(response.data);
   return {
     categories: response.data,
   };

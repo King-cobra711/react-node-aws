@@ -84,3 +84,23 @@ a {
   }
 }
 /* END Link Submission Page */
+
+/* Admin Categories Page */
+@media screen and (max-width: 576px) {
+  #mobile-content.mobileCol {
+    display: none !important;
+  }
+  .mobile-title-category {
+    margin-bottom: 0.5em;
+  }
+  .mobile-category-image {
+    border-radius: 1em;
+    box-shadow: 5px 7px #88888888;
+  }
+}
+@media screen and (min-width: 577px) {
+  #up-and-del.up-and-del-col {
+    display: none !important;
+  }
+}
+/* End Admin Categories Page */

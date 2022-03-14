@@ -23,6 +23,8 @@ const ResetPassword = ({ router }) => {
   const { name, token, newPassword, buttonText, success, error } = state;
 
   useEffect(() => {
+    // router.query.id where id is the name of the page, ie the :id in the url.
+    // This is client side method
     const decoded = jwt.decode(router.query.id);
 
     if (decoded) {
