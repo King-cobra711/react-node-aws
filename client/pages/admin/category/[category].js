@@ -88,6 +88,8 @@ const Update = ({ user, token }) => {
           },
         }
       );
+      setContent("");
+      setImageUploadText("Upload Image");
       setState({
         name: "",
         image: "",
@@ -95,8 +97,6 @@ const Update = ({ user, token }) => {
         error: "",
         success: response.data.message,
       });
-      setContent("");
-      setImageUploadText("Upload Image");
     } catch (error) {
       setState({
         ...state,

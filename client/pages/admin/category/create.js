@@ -18,8 +18,6 @@ const Create = ({ user, token }) => {
     buttonText: "Create",
     image: "",
   });
-  const [message, setMessage] = useState("");
-
   const [content, setContent] = useState("");
 
   const [imageUploadText, setImageUploadText] = useState("Upload Image");
@@ -89,15 +87,15 @@ const Create = ({ user, token }) => {
           },
         }
       );
+      setContent("");
+      setImageUploadText("Upload Image");
       setState({
         name: "",
         image: "",
         buttonText: "Created",
         error: "",
-        success: "response.data.message",
+        success: response.data.message,
       });
-      setContent("");
-      setImageUploadText("Upload Image");
     } catch (error) {
       setState({
         ...state,
