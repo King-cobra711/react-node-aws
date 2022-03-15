@@ -10,20 +10,22 @@ import Layout from "../../../components/layout";
 import withAdmin from "../../withAdmin";
 import { showSuccessMessage, showErrorMessage } from "../../../helpers/alerts";
 
-const Update = ({ user, token }) => {
+const Update = ({ token, oldCategory }) => {
   const [state, setState] = useState({
-    name: "",
+    name: oldCategory.name,
     error: "",
     success: "",
-    buttonText: "Create",
+    buttonText: "Update",
+    imagePreview: oldCategory.image.url,
     image: "",
   });
 
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState(oldCategory.content);
 
   const [imageUploadText, setImageUploadText] = useState("Upload Image");
+  // const [imagePreview, setImagePreview] = useState(oldCategory.image.url);
 
-  const { name, error, success, image, buttonText } = state;
+  const { name, error, success, image, buttonText, imagePreview } = state;
 
   const handleChange = (name) => (e) => {
     setState({
@@ -31,7 +33,7 @@ const Update = ({ user, token }) => {
       [name]: e.target.value,
       error: "",
       success: "",
-      buttonText: "Create",
+      buttonText: "Update",
     });
   };
 
@@ -58,9 +60,10 @@ const Update = ({ user, token }) => {
             setState({
               ...state,
               image: uri,
+              imagePreview: uri,
               error: "",
               success: "",
-              buttonText: "Create",
+              buttonText: "Update",
             });
           },
           "base64"
@@ -76,11 +79,11 @@ const Update = ({ user, token }) => {
     e.preventDefault();
     setState({
       ...state,
-      buttonText: "Creating",
+      buttonText: "Updating",
     });
     try {
-      const response = await axios.post(
-        `${API}/category`,
+      const response = await axios.put(
+        `${API}/category/${oldCategory.slug}`,
         { name, content, image },
         {
           headers: {
@@ -88,26 +91,30 @@ const Update = ({ user, token }) => {
           },
         }
       );
-      setContent("");
-      setImageUploadText("Upload Image");
+      console.log("This is the response:  ", response);
+
+      setContent(response.data.updated.content);
+      setImageUploadText("Update Image");
       setState({
-        name: "",
+        name: response.data.updated.name,
         image: "",
-        buttonText: "Created",
+        imagePreview: response.data.updated.image.url,
+        buttonText: "Updated",
         error: "",
         success: response.data.message,
       });
     } catch (error) {
+      console.log("CATCH ERROR:   ", error);
       setState({
         ...state,
-        buttonText: "Create",
+        buttonText: "Update",
         success: "",
         error: error.response.data.error,
       });
     }
   };
 
-  const createCategoryForm = () => (
+  const updateCategoryForm = () => (
     <form onSubmit={handleSubmit}>
       <div className="form-group">
         <label className="text-muted">Name</label>
@@ -133,6 +140,9 @@ const Update = ({ user, token }) => {
       <div className="form-group">
         <label className="btn btn-outline-secondary">
           {imageUploadText}
+          <span>
+            <img src={imagePreview} alt="image" height="30" className="ms-2" />
+          </span>
           <input
             onChange={handleImage}
             type="file"
@@ -152,16 +162,21 @@ const Update = ({ user, token }) => {
     <Layout>
       <div className="row">
         <div className="col-md-6 offset-md-3">
-          <h1>Create Category</h1>
+          <h1>Update Category</h1>
 
           <br />
           {success && showSuccessMessage(success)}
           {error && showErrorMessage(error)}
-          {createCategoryForm()}
+          {updateCategoryForm()}
         </div>
       </div>
     </Layout>
   );
+};
+
+Update.getInitialProps = async ({ req, query, token }) => {
+  const response = await axios.post(`${API}/category/${query.slug}`);
+  return { oldCategory: response.data.category, token };
 };
 
 export default withAdmin(Update);

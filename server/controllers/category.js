@@ -114,7 +114,14 @@ exports.update = (req, res) => {
   const { slug } = req.params;
   const { name, image, content } = req.body;
 
-  Category.findOneAndUpdate({ slug }, { name, content }, { new: true }).execute(
+  // image data
+  const base64Data = new Buffer.from(
+    image.replace(/^data:image\/\w+;base64,/, ""),
+    "base64"
+  );
+  const type = image.split(";")[0].split("/")[1];
+
+  Category.findOneAndUpdate({ slug }, { name, content }, { new: true }).exec(
     (err, updated) => {
       if (err) {
         return res.status(400).json({
@@ -125,10 +132,10 @@ exports.update = (req, res) => {
         // remove the exising image from s3
         const deleteParams = {
           Bucket: "king-cobra711-react-node-aws",
-          Key: `category/${updated.image.key}`,
+          Key: `${updated.image.key}`,
         };
 
-        s3.deleteObject(deleteParams, (err, data) => {
+        s3.deleteObject(deleteParams, function (err, data) {
           if (err) {
             console.log("S3 DELETE ERROR DURING CATEGORY UPDATE", err);
           } else {
@@ -161,15 +168,16 @@ exports.update = (req, res) => {
                 error: "Error saving category to database",
               });
             } else {
+              updated = success;
               return res.json({
-                success,
+                updated,
                 message: `Successfully updated "${name}"`,
               });
             }
           });
         });
       } else {
-        res.json(updated);
+        res.json({ updated, message: `Successfully updated "${name}"` });
       }
     }
   );
@@ -183,13 +191,15 @@ exports.remove = (req, res) => {
         error: "Could not delete category",
       });
     }
+    console.log("this is success:   ", success);
+    console.log("this is success.image.key:   ", success.image.key);
     // remove the exising image from s3
     const deleteParams = {
       Bucket: "king-cobra711-react-node-aws",
       Key: `${success.image.key}`,
     };
 
-    s3.deleteObject(deleteParams, (err, data) => {
+    s3.deleteObject(deleteParams, function (err, data) {
       if (err) {
         console.log("S3 DELETE ERROR DURING CATEGORY DELETE", err);
       } else {
@@ -197,7 +207,7 @@ exports.remove = (req, res) => {
       }
     });
     res.json({
-      message: `Successfully deleted ${slug}`,
+      message: `Successfully deleted '${success.name}'`,
     });
   });
 };

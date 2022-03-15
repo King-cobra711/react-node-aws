@@ -128,6 +128,8 @@ const Read = ({ user, token }) => {
           <h1>List of categories</h1>
         </div>
       </div>
+      {success && showSuccessMessage(success)}
+      {error && showErrorMessage(error)}
       <div className="row">{listCategories()}</div>
     </Layout>
   );
