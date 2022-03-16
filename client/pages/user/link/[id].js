@@ -4,19 +4,20 @@ import axios from "axios";
 import { API } from "../../../config";
 import { showSuccessMessage, showErrorMessage } from "../../../helpers/alerts";
 import { getCookie, isAuth } from "../../../helpers/auth";
+import withUser from "../../withUser";
 
-const Create = ({ token }) => {
+const UpdateLink = ({ token, query, link }) => {
   // state
   const [state, setState] = useState({
-    title: "",
-    url: "",
-    categories: [],
+    title: link.title,
+    url: link.url,
+    categories: link.categories,
     loadedCategories: [],
     buttonText: "",
     success: "",
     error: "",
-    type: "",
-    medium: "",
+    type: link.type,
+    medium: link.medium,
   });
   const {
     title,
@@ -36,18 +37,31 @@ const Create = ({ token }) => {
   }, [success]);
 
   // functions
+
+  const showChecked = (c) => {
+    const clickedCategory = categories.indexOf(c);
+
+    if (clickedCategory === -1) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
   const loadCategories = async () => {
     const response = await axios.get(`${API}/categories`);
-
-    setState({ ...state, loadedCategories: response.data });
+    setState({
+      ...state,
+      loadedCategories: response.data,
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     // console.log(title, url, categories, type, medium);
     try {
-      const response = await axios.post(
-        `${API}/link`,
+      const response = await axios.put(
+        `${API}/link/${link._id}`,
         { title, url, categories, type, medium },
         {
           headers: {
@@ -57,16 +71,9 @@ const Create = ({ token }) => {
       );
       setState({
         ...state,
-        title: "",
-        url: "",
-        success: "Link created!",
+        success: "Link updated!",
         error: "",
-        loadedCategories: [],
-        categories: [],
-        type: "",
-        medium: "",
       });
-      console.log("THIS IS STATE", state);
     } catch (error) {
       console.log("Link submission error: ", error);
       setState({
@@ -92,6 +99,7 @@ const Create = ({ token }) => {
       success: "",
     });
   };
+
   const handleToggle = (c) => () => {
     //return the first index or -1
     const clickedCategory = categories.indexOf(c);
@@ -102,6 +110,7 @@ const Create = ({ token }) => {
     } else {
       all.splice(clickedCategory, 1);
     }
+    console.log("all >> ", all);
     setState({ ...state, categories: all, success: "", error: "" });
   };
 
@@ -128,8 +137,8 @@ const Create = ({ token }) => {
         <label className="form-check-label">Free</label>
         <input
           type="radio"
-          onChange={() => {}}
-          checked={type === "free"}
+          onClick={handleTypeClick}
+          defaultChecked={type === "free"}
           value="free"
           className="form-check-input"
           name="type"
@@ -139,8 +148,8 @@ const Create = ({ token }) => {
         <label className="form-check-label">Paid</label>
         <input
           type="radio"
-          onChange={() => {}}
-          checked={type === "paid"}
+          onClick={handleTypeClick}
+          defaultChecked={type === "paid"}
           value="paid"
           className="form-check-input"
           name="type"
@@ -154,8 +163,8 @@ const Create = ({ token }) => {
         <label className="form-check-label">Video</label>
         <input
           type="radio"
-          onChange={() => {}}
-          checked={medium === "video"}
+          onClick={handleMediumClick}
+          defaultChecked={medium === "video"}
           value="video"
           className="form-check-input"
           name="medium"
@@ -165,8 +174,8 @@ const Create = ({ token }) => {
         <label className="form-check-label">Article</label>
         <input
           type="radio"
-          onChange={() => {}}
-          checked={medium === "article"}
+          onClick={handleMediumClick}
+          defaultChecked={medium === "article"}
           value="article"
           className="form-check-input"
           name="medium"
@@ -220,6 +229,7 @@ const Create = ({ token }) => {
             type="checkbox"
             onChange={handleToggle(c._id)}
             className="me-2"
+            checked={showChecked(c._id)}
           />
           <label className="form-check-label">{c.name}</label>
         </li>
@@ -248,11 +258,11 @@ const Create = ({ token }) => {
               {showCategories()}
             </ul>
           </div>
-          <div className="form-group" onChange={handleTypeClick}>
+          <div className="form-group ">
             <label className="text-muted ms-4">Type</label>
             {showTypes()}
           </div>
-          <div className="form-group" onChange={handleMediumClick}>
+          <div className="form-group ">
             <label className="text-muted ms-4">Medium</label>
             {showMedium()}
           </div>
@@ -263,9 +273,9 @@ const Create = ({ token }) => {
   );
 };
 
-Create.getInitialProps = ({ req }) => {
-  const token = getCookie("token", req);
-  return { token };
+UpdateLink.getInitialProps = async ({ query, req }) => {
+  const response = await axios.get(`${API}/link/${query.id}`);
+  return { query, link: response.data };
 };
 
-export default Create;
+export default withUser(UpdateLink);

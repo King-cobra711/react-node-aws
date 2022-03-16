@@ -2,7 +2,7 @@ import Layout from "../../components/layout";
 import withAdmin from "../withAdmin";
 import Link from "next/link";
 
-const Admin = ({ user, token }) => (
+const Admin = ({ user, token, userLinks }) => (
   <Layout>
     <h1>Admin Dashboard</h1>
     <div className="row">

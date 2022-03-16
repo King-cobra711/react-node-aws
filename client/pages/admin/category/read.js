@@ -25,9 +25,7 @@ const Read = ({ user, token }) => {
       categories: response.data,
     });
   };
-  const updateCtaegory = () => {
-    const response = axios.get(`${API}/categories`);
-  };
+
   const deleteCategory = async (slug) => {
     try {
       const response = await axios.delete(`${API}/category/${slug}`, {
@@ -48,7 +46,7 @@ const Read = ({ user, token }) => {
   };
   const confirmDelete = async (e, slug) => {
     e.preventDefault();
-    let answer = window.confirm(`Are you sure you want to delet ${slug}?`);
+    let answer = window.confirm(`Are you sure you want to delete ${slug}?`);
 
     if (answer) {
       deleteCategory(slug);

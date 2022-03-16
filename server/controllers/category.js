@@ -49,6 +49,7 @@ exports.create = (req, res) => {
   // Upload to aws S3
   s3.upload(params, function (err, data) {
     if (err) {
+      console.log("UPLOAD ERROR:    ", err);
       res.status(400).json({
         error: "Failed to upload to S3",
       });

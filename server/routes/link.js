@@ -36,15 +36,15 @@ router.post(
 );
 router.get("/links", list);
 router.put("/click-count", clickCount);
-router.get("/link/:slug", read);
+router.get("/link/:id", read);
 router.put(
-  "/link/:slug",
+  "/link/:id",
   linkUpdateValidator,
   runValidation,
   requireSignin,
   authMiddleware,
   update
 );
-router.delete("/link/:slug", requireSignin, authMiddleware, remove);
+router.delete("/link/:id", requireSignin, authMiddleware, remove);
 
 module.exports = router;

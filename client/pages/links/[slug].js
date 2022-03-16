@@ -74,17 +74,6 @@ const Links = ({
     setSkip(toSkip);
   };
 
-  //   const loadMoreButton = () => {
-  //     return (
-  //       size > 0 &&
-  //       size >= limit && (
-  //         <button className="btn btn-outline-primary btn-lg" onClick={loadMore}>
-  //           Load More
-  //         </button>
-  //       )
-  //     );
-  //   };
-
   return (
     <Layout>
       <div className="row flex-column-reverse flex-md-row">

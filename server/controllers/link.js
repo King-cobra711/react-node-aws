@@ -34,7 +34,16 @@ exports.create = (req, res) => {
   });
 };
 exports.read = (req, res) => {
-  //
+  const { id } = req.params;
+  Link.findOne({ _id: id }).exec((err, link) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Could not list links",
+      });
+    }
+
+    res.json(link);
+  });
 };
 exports.list = (req, res) => {
   Link.find({}).exec((err, data) => {
@@ -47,10 +56,41 @@ exports.list = (req, res) => {
   });
 };
 exports.update = (req, res) => {
-  //
+  const { id } = req.params;
+  const { title, url, categories, type, medium } = req.body;
+
+  const slug = url;
+
+  // Check to see if link already exists
+  Link.findOneAndUpdate(
+    { _id: id },
+    { title, url, categories, type, medium, slug },
+    { new: true }
+  ).exec((err, updated) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Error updating link",
+      });
+    }
+    res.json({
+      message: `${updated.title} updated successfully`,
+      updated,
+    });
+  });
 };
 exports.remove = (req, res) => {
-  //
+  const { id } = req.params;
+
+  Link.findOneAndRemove({ _id: id }).exec((err, success) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Could not delete link",
+      });
+    }
+    res.json({
+      message: `Successfully deleted '${success.title}'`,
+    });
+  });
 };
 exports.clickCount = (req, res) => {
   const { linkId } = req.body;

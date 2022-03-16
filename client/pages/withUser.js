@@ -14,6 +14,7 @@ const withUser = (Page) => {
   WithAuthUser.getInitialProps = async (context) => {
     const token = getCookie("token", context.req);
     let user = null;
+    let userLinks = [];
 
     if (token) {
       try {
@@ -23,11 +24,14 @@ const withUser = (Page) => {
             contentType: "application/json",
           },
         });
-        user = response.data;
+        console.log("ERROR TEST RESPONSE:    ", response);
+        user = response.data.user;
+        userLinks = response.data.links;
       } catch (error) {
-        console.error("This is error: ", error);
+        console.log("This is error: ", error);
         if (error.response.status === 401) {
           user = null;
+          userLinks = [];
         }
       }
     }
@@ -42,6 +46,7 @@ const withUser = (Page) => {
         ...(Page.getInitialProps ? await Page.getInitialProps(context) : {}),
         user,
         token,
+        userLinks,
       };
     }
   };
