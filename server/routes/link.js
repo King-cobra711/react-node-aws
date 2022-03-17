@@ -13,6 +13,7 @@ const { runValidation } = require("../validators/index");
 const {
   requireSignin,
   authMiddleware,
+  adminMiddleware,
 } = require("../controllers/authentication");
 
 const {
@@ -38,7 +39,7 @@ router.post(
 );
 router.get("/links", list);
 router.post("/user/links", requireSignin, authMiddleware, listUserLinks);
-router.post("/admin/links", requireSignin, authMiddleware, listAdminLinks);
+router.post("/admin/links", requireSignin, adminMiddleware, listAdminLinks);
 router.put("/click-count", clickCount);
 router.get("/link/:id", read);
 router.put(

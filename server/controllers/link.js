@@ -61,12 +61,12 @@ exports.listUserLinks = (req, res) => {
 
   let limit = req.body.limit ? parseInt(req.body.limit) : 5;
   let skip = req.body.skip ? parseInt(req.body.skip) : 0;
-  console.log("SKIP hedhdhjdjh", skip);
-  console.log("LIMIT fjkjtgnjfvjnk", limit);
   Link.find({ postedBy: id })
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit)
+    .populate("postedBy", "name")
+    .populate("categories", "name")
     .exec((err, links) => {
       if (err) {
         return res.status(400).json({
@@ -84,6 +84,8 @@ exports.listAdminLinks = (req, res) => {
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit)
+    .populate("postedBy", "name")
+    .populate("categories", "name")
     .exec((err, links) => {
       if (err) {
         return res.status(400).json({

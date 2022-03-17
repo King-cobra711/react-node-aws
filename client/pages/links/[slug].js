@@ -35,7 +35,7 @@ const Links = ({
 
   const listOfLinks = () =>
     allLinks.map((l, index) => (
-      <div className="row alert alert-primary p-2" key={index}>
+      <div className="row alert alert-primary p-2 text-start" key={index}>
         <div className="col-md-8" onClick={(e) => handleClick(l._id)}>
           <a href={l.url} target="_blank">
             <h5 className="pt-4">{l.title}</h5>
@@ -45,7 +45,7 @@ const Links = ({
           </a>
         </div>
         <div className="col-md-4 pt-2">
-          <span className="pull-right" key={index}>
+          <span className="float-right" key={index}>
             {moment(l.createdAt).fromNow()} by {l.postedBy.name}
           </span>
         </div>

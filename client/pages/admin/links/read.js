@@ -81,12 +81,12 @@ const User = ({ user, token }) => {
       <div className="row alert alert-primary p-2" key={key}>
         <div className="col-md-8">
           <a href={l.url} target="_blank">
-            <h5 className="pt-2">{l.title}</h5>
-            <h6 className="pt-2 text-danger">{l.url}</h6>
+            <h5 className="pt-2 text-truncate">{l.title}</h5>
+            <h6 className="pt-2 text-danger text-truncate">{l.url}</h6>
           </a>
         </div>
         <div className="col-md-4 pt-2">
-          <span className="float-start mt-2 mb-2">
+          <span className="float-start mt-2 mb-2 posted-mobile">
             {moment(l.createdAt).fromNow()} by {l.postedBy.name}
           </span>
 
