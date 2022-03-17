@@ -35,7 +35,7 @@ const Links = ({
 
   const listOfLinks = () =>
     allLinks.map((l, index) => (
-      <div className="row alert alert-primary p-2">
+      <div className="row alert alert-primary p-2" key={index}>
         <div className="col-md-8" onClick={(e) => handleClick(l._id)}>
           <a href={l.url} target="_blank">
             <h5 className="pt-4">{l.title}</h5>
@@ -45,7 +45,7 @@ const Links = ({
           </a>
         </div>
         <div className="col-md-4 pt-2">
-          <span className="pull-right">
+          <span className="pull-right" key={index}>
             {moment(l.createdAt).fromNow()} by {l.postedBy.name}
           </span>
         </div>
@@ -54,7 +54,9 @@ const Links = ({
             {l.type} / {l.medium}
           </span>
           {l.categories.map((c, i) => (
-            <span className="badge text-success">{c.name}</span>
+            <span className="badge text-success" key={i}>
+              {c.name}
+            </span>
           ))}
           <span className="badge text-secondary float-end">
             {l.clicks} clicks
@@ -94,13 +96,6 @@ const Links = ({
           />
         </div>
       </div>
-      <div className="row flex-column-reverse flex-md-row">
-        <div className="col-md-8">{listOfLinks()}</div>
-        <div className="col-md-4">
-          <h1>Most popular in {category.name}</h1>
-          <p>Show popular links</p>
-        </div>
-      </div>
       {/* <div className="text-center pt-4 pb-5">{loadMoreButton()}</div> */}
       <div className="row">
         <div className="col-md-12 text-center">
@@ -110,12 +105,21 @@ const Links = ({
             hasMore={size > 0 && size >= limit}
             loader={
               <img
+                key={0}
                 src="/static/images/React-node-aws-Curve-Loading.gif"
                 alt="loading"
                 style={{ width: "auto", height: "200px" }}
               />
             }
-          ></InfiniteScroll>
+          >
+            <div className="row flex-column-reverse flex-md-row">
+              <div className="col-md-8">{listOfLinks()}</div>
+              <div className="col-md-4">
+                <h1>Most popular in {category.name}</h1>
+                <p>Show popular links</p>
+              </div>
+            </div>
+          </InfiniteScroll>
         </div>
       </div>
     </Layout>

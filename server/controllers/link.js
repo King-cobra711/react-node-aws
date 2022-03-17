@@ -35,6 +35,7 @@ exports.create = (req, res) => {
 };
 exports.read = (req, res) => {
   const { id } = req.params;
+
   Link.findOne({ _id: id }).exec((err, link) => {
     if (err) {
       return res.status(400).json({
@@ -54,6 +55,44 @@ exports.list = (req, res) => {
     }
     res.json(data);
   });
+};
+exports.listUserLinks = (req, res) => {
+  const id = req.user._id;
+
+  let limit = req.body.limit ? parseInt(req.body.limit) : 5;
+  let skip = req.body.skip ? parseInt(req.body.skip) : 0;
+  console.log("SKIP hedhdhjdjh", skip);
+  console.log("LIMIT fjkjtgnjfvjnk", limit);
+  Link.find({ postedBy: id })
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit)
+    .exec((err, links) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Could not list links",
+        });
+      }
+
+      res.json(links);
+    });
+};
+exports.listAdminLinks = (req, res) => {
+  let limit = req.body.limit ? parseInt(req.body.limit) : 5;
+  let skip = req.body.skip ? parseInt(req.body.skip) : 0;
+  Link.find({})
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit)
+    .exec((err, links) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Could not list links",
+        });
+      }
+
+      res.json(links);
+    });
 };
 exports.update = (req, res) => {
   const { id } = req.params;

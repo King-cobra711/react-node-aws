@@ -14,20 +14,8 @@ exports.read = (req, res) => {
     }
     user.hashed_password = undefined;
     user.salt = undefined;
-    Link.find({ postedBy: user })
-      .populate("categories", "name slug")
-      .populate("postedBy", "name")
-      .sort({ createdAt: -1 })
-      .exec((err, links) => {
-        if (err) {
-          res.json({
-            error: "Error finding links",
-          });
-        }
-        res.json({
-          user,
-          links,
-        });
-      });
+    res.json({
+      user,
+    });
   });
 };

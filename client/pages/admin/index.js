@@ -18,6 +18,16 @@ const Admin = ({ user, token, userLinks }) => (
               <a className="nav-link">All Categories</a>
             </Link>
           </li>
+          <li className="nav-item">
+            <Link href="admin/links/read">
+              <a className="nav-link">All Links</a>
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link href="admin/users/read">
+              <a className="nav-link">All Users</a>
+            </Link>
+          </li>
         </ul>
       </div>
       <div className="col-md-8"></div>

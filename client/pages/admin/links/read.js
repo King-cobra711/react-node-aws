@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-import Layout from "../../components/layout";
-import withUser from "../withUser";
+import Layout from "../../../components/layout";
+import withUser from "../../withUser";
 import axios from "axios";
-import { API } from "../../config";
-import { getCookie } from "../../helpers/auth";
+import { API } from "../../../config";
 import Link from "next/link";
 import moment from "moment";
 import InfiniteScroll from "react-infinite-scroller";
-import { showSuccessMessage, showErrorMessage } from "../../helpers/alerts";
+import { showSuccessMessage, showErrorMessage } from "../../../helpers/alerts";
 
 const User = ({ user, token }) => {
   const [state, setState] = useState({
@@ -29,7 +28,7 @@ const User = ({ user, token }) => {
   const loadLinks = async () => {
     try {
       const response = await axios.post(
-        `${API}/user/links`,
+        `${API}/admin/links`,
         { skip, limit },
         {
           headers: {
@@ -48,6 +47,8 @@ const User = ({ user, token }) => {
   };
 
   const deleteLink = async (id) => {
+    await setLinks(links.filter((item) => item._id !== id));
+    console.log("del filter links:   ", links);
     try {
       const response = await axios.delete(`${API}/link/${id}`, {
         headers: {
@@ -85,7 +86,7 @@ const User = ({ user, token }) => {
           </a>
         </div>
         <div className="col-md-4 pt-2">
-          <span className="pull-right mt-2 mb-2">
+          <span className="float-start mt-2 mb-2">
             {moment(l.createdAt).fromNow()} by {l.postedBy.name}
           </span>
 
@@ -125,7 +126,7 @@ const User = ({ user, token }) => {
       </h1>
       <hr />
       <div className="row">
-        <div className="col-md-4">
+        <div className="col-sm-3">
           <ul className="nav flex-column">
             <li className="nav-item">
               <Link href="/user/link/create">
@@ -139,8 +140,8 @@ const User = ({ user, token }) => {
             </li>
           </ul>
         </div>
-        <div className="col-md-8">
-          <h2>Your links</h2>
+        <div className="col-sm-9">
+          <h2>Site links</h2>
           {success && showSuccessMessage(success)}
           {error && showErrorMessage(error)}
           <hr />

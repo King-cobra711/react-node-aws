@@ -24,14 +24,11 @@ const withUser = (Page) => {
             contentType: "application/json",
           },
         });
-        console.log("ERROR TEST RESPONSE:    ", response);
         user = response.data.user;
-        userLinks = response.data.links;
       } catch (error) {
         console.log("This is error: ", error);
         if (error.response.status === 401) {
           user = null;
-          userLinks = [];
         }
       }
     }
@@ -46,7 +43,6 @@ const withUser = (Page) => {
         ...(Page.getInitialProps ? await Page.getInitialProps(context) : {}),
         user,
         token,
-        userLinks,
       };
     }
   };

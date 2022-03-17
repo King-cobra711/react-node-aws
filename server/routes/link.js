@@ -19,6 +19,8 @@ const {
   create,
   read,
   list,
+  listUserLinks,
+  listAdminLinks,
   update,
   remove,
   clickCount,
@@ -35,6 +37,8 @@ router.post(
   create
 );
 router.get("/links", list);
+router.post("/user/links", requireSignin, authMiddleware, listUserLinks);
+router.post("/admin/links", requireSignin, authMiddleware, listAdminLinks);
 router.put("/click-count", clickCount);
 router.get("/link/:id", read);
 router.put(
