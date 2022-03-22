@@ -80,27 +80,32 @@ const User = ({ user, token }) => {
       <div className="row alert alert-primary p-2" key={key}>
         <div className="col-md-8">
           <a href={l.url} target="_blank">
-            <h5 className="pt-2 text-truncate">{l.title}</h5>
+            <h5 className="pt-3 text-truncate">{l.title}</h5>
             <h6 className="pt-2 text-danger text-truncate">{l.url}</h6>
           </a>
         </div>
-        <div className="col-md-4 pt-2">
-          <span className="float-start mt-2 mb-2 posted-mobile">
-            Submitted {moment(l.createdAt).fromNow()}
-          </span>
-
-          <a href="#" onClick={(e) => confirmDelete(e, l._id, l.slug)}>
-            <span className="badge text-danger float-end mt-2 mb-2">
-              delete
-            </span>
-          </a>
-          <Link href={`/user/link/${l._id}`}>
-            <a>
-              <span className="badge text-primary float-end mt-2 mb-2">
-                update
+        <div className="col-lg-4 pt-2">
+          <div className="row">
+            <div className="col-lg-12 col-7">
+              <span className="submitted-float mt-2 ms-1 mb-2 ">
+                Submitted {moment(l.createdAt).fromNow()}
               </span>
-            </a>
-          </Link>
+            </div>
+            <div className="col-lg-12 col-5">
+              <a href="#" onClick={(e) => confirmDelete(e, l._id, l.slug)}>
+                <span className="badge text-danger float-end mt-2 mb-2">
+                  delete
+                </span>
+              </a>
+              <Link href={`/user/link/${l._id}`}>
+                <a>
+                  <span className="badge text-primary float-end mt-2 mb-2">
+                    update
+                  </span>
+                </a>
+              </Link>
+            </div>
+          </div>
         </div>
         <div className="col-md-12 order-sm-2">
           <span className="badge text-dark ps-0">
@@ -133,7 +138,7 @@ const User = ({ user, token }) => {
               </Link>
             </li>
             <li className="nav-item">
-              <Link href="/user/link/update">
+              <Link href="/user/update">
                 <a className="nav-link">Update profile</a>
               </Link>
             </li>

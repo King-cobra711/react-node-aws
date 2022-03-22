@@ -13,9 +13,9 @@ import { isAuth } from "../helpers/auth";
 export default function Register() {
   //   State
   const [formInputs, setFormInputs] = useState({
-    name: "Matthew",
-    email: "matt@matthewhansen.com.au",
-    password: "password",
+    name: "",
+    email: "",
+    password: "",
     passwordConfirm: "",
     error: "",
     success: "",

@@ -22,7 +22,7 @@ const Read = ({ user, token }) => {
     const response = await axios.get(`${API}/categories`);
     setState({
       ...state,
-      categories: response.data,
+      categories: response.data.categories,
     });
   };
 
@@ -65,7 +65,7 @@ const Read = ({ user, token }) => {
               <img
                 src={c.image.url}
                 alt="/"
-                style={{ width: "100px", height: "auto" }}
+                style={{ width: "200px", height: "auto" }}
                 className="me-3 float-start mobile-category-image"
               />
               <div className="text-center mobile-title-category">

@@ -38,8 +38,9 @@ const Create = ({ token }) => {
   // functions
   const loadCategories = async () => {
     const response = await axios.get(`${API}/categories`);
+    console.log("This is the response", response);
 
-    setState({ ...state, loadedCategories: response.data });
+    setState({ ...state, loadedCategories: response.data.categories });
   };
 
   const handleSubmit = async (e) => {

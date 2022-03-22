@@ -73,19 +73,32 @@ exports.create = (req, res) => {
   });
 };
 exports.list = (req, res) => {
-  Category.find({}).exec((err, data) => {
-    if (err) {
-      return res.status(400).json({
-        error: "Categories could not load",
+  Promise.all([
+    Category.find({}),
+    Link.find({})
+      .sort({ clicks: -1 })
+      .limit(3)
+      .populate("postedBy", "name")
+      .populate("categories", "name"),
+  ])
+    .then((results) => {
+      const [categories, links] = results;
+      console.log("categories", categories);
+      console.log("links", links);
+      res.json({
+        categories,
+        links,
       });
-    }
-    res.json(data);
-  });
+    })
+    .catch((err) => {
+      console.error("Error loading categories and links:  ", err);
+    });
 };
 exports.read = (req, res) => {
   const { slug } = req.params;
   let limit = req.body.limit ? parseInt(req.body.limit) : 10;
   let skip = req.body.skip ? parseInt(req.body.skip) : 0;
+
   Category.findOne({ slug })
     .populate("postedBy", "_id name username")
     .exec((err, category) => {
@@ -94,7 +107,6 @@ exports.read = (req, res) => {
           error: "Could not load category",
         });
       }
-      console.log(category);
       Link.find({ categories: category })
         .populate("postedBy", "_id name username")
         .populate("categories", "name")
@@ -107,7 +119,19 @@ exports.read = (req, res) => {
               error: "Could not load links of a category",
             });
           }
-          res.json({ category, links });
+          Link.find({ categories: category })
+            .populate("postedBy", "_id name username")
+            .populate("categories", "name")
+            .sort({ clicks: -1 })
+            .limit(3)
+            .exec((err, pop) => {
+              if (err) {
+                return res.status(400).json({
+                  error: "Could not load top links of a category",
+                });
+              }
+              res.json({ category, links, pop });
+            });
         });
     });
 };

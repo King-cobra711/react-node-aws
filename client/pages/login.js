@@ -10,8 +10,8 @@ import { authenticate, isAuth } from "../helpers/auth";
 export default function Login() {
   //   State
   const [formInputs, setFormInputs] = useState({
-    email: "matt@matthewhansen.com.au",
-    password: "Password",
+    email: "",
+    password: "",
     error: "",
     success: "",
     buttonText: "Login",

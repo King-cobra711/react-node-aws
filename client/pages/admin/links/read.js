@@ -85,23 +85,28 @@ const User = ({ user, token }) => {
             <h6 className="pt-2 text-danger text-truncate">{l.url}</h6>
           </a>
         </div>
-        <div className="col-md-4 pt-2">
-          <span className="float-start mt-2 mb-2 posted-mobile">
-            {moment(l.createdAt).fromNow()} by {l.postedBy.name}
-          </span>
-
-          <a href="#" onClick={(e) => confirmDelete(e, l._id, l.slug)}>
-            <span className="badge text-danger float-end mt-2 mb-2">
-              delete
-            </span>
-          </a>
-          <Link href={`/user/link/${l._id}`}>
-            <a>
-              <span className="badge text-primary float-end mt-2 mb-2">
-                update
+        <div className="col-lg-4 pt-2">
+          <div className="row">
+            <div className="col-lg-12 col-7">
+              <span className="submitted-float mt-2 mb-2 ">
+                {moment(l.createdAt).fromNow()} by {l.postedBy.name}
               </span>
-            </a>
-          </Link>
+            </div>
+            <div className="col-lg-12 col-5">
+              <a href="#" onClick={(e) => confirmDelete(e, l._id, l.slug)}>
+                <span className="badge text-danger float-end mt-2 mb-2">
+                  delete
+                </span>
+              </a>
+              <Link href={`/user/link/${l._id}`}>
+                <a>
+                  <span className="badge text-primary float-end mt-2 mb-2">
+                    update
+                  </span>
+                </a>
+              </Link>
+            </div>
+          </div>
         </div>
         <div className="col-md-12">
           <span className="badge text-dark ps-0">

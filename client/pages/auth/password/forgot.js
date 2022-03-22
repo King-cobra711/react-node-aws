@@ -8,7 +8,7 @@ import { API } from "../../../config";
 const ForgotPassword = () => {
   // state
   const [state, setState] = useState({
-    email: "matt@matthewhansen.com.au",
+    email: "",
     buttonText: "Send Link",
     success: "",
     error: "",
