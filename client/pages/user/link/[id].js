@@ -52,7 +52,7 @@ const UpdateLink = ({ token, query, link }) => {
     const response = await axios.get(`${API}/categories`);
     setState({
       ...state,
-      loadedCategories: response.data,
+      loadedCategories: response.data.categories,
     });
   };
 
